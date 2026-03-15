@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ============================================================
+  STEVE.DEV — SINGLE PAGE PORTFOLIO
+  ============================================================
+  All sections in one file for easy editing and GitHub Pages.
+
+  SECTIONS (in order):
+    1.  <head>       — Meta, fonts, CSS variables, all styles
+    2.  <nav>        — Fixed navbar with dark/light toggle
+    3.  #home        — Hero section
+    4.  .marquee     — Scrolling keyword strip
+    5.  #about       — About me + stat cards
+    6.  #stack       — Tech stack grid
+    7.  #services    — All 7 services list
+    8.  #portfolio   — Project cards (add/delete via modal)
+    9.  #process     — 6-step process timeline
+    10. #pricing     — 3 pricing plan cards
+    11. #testimonials— 3 client testimonials
+    12. #faq         — FAQ accordion
+    13. .cta-band    — Yellow call-to-action strip
+    14. #contact     — Contact form + details
+    15. <footer>     — Links and copyright
+    16. Modals       — Add project modal + lightbox
+    17. <script>     — All JavaScript
+
+  HOW TO UPDATE:
+    - Change your name:     Search "Steve" and replace
+    - Change WhatsApp:      Search "91XXXXXXXXXX" and replace
+    - Change email:         Search "your@email.com" and replace
+    - Add a project:        Click "+ Add Project" button live
+    - Toggle dark/light:    ☀️/🌙 button in top right nav
+  ============================================================
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Steve.dev — Web Developer, Rajahmundry</title>
+  <meta name="description" content="Professional web developer based in Rajahmundry, AP. Fast, affordable websites for businesses across India." />
+
+  <!-- Google Fonts: Syne (headings) + DM Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       1. CSS RESET
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { max-width: 100%; display: block; }
+    a   { color: inherit; text-decoration: none; }
+    ul  { list-style: none; }
+    button, input, select, textarea { font-family: inherit; }
+
+    /* ============================================================
+       2. THEME VARIABLES
+       :root = dark mode (default)
+       html.light = light mode (toggled by JS)
+       ============================================================ */
+    :root {
+      --bg:      #08080f;
+      --bg2:     #0f0f18;
+      --bg3:     #161621;
+      --bg4:     #1e1e2e;
+      --text:    #f0ede8;
+      --muted:   #64647a;
+      --muted2:  #9898b0;
+      --accent:  #e8ff47;      /* yellow-green highlight */
+      --accent2: #47b8ff;      /* blue accent */
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.13);
+      --shadow:  0 8px 40px rgba(0,0,0,0.45);
+      --nav-bg:  rgba(8,8,15,0.92);
+    }
+    html.light {
+      --bg:      #f4f4ef;
+      --bg2:     #eaeae4;
+      --bg3:     #dfdfd8;
+      --bg4:     #d3d3cb;
+      --text:    #111118;
+      --muted:   #888892;
+      --muted2:  #505060;
+      --accent:  #8fa800;      /* darker for legibility on light bg */
+      --accent2: #0070bb;
+      --border:  rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.15);
+      --shadow:  0 8px 40px rgba(0,0,0,0.12);
+      --nav-bg:  rgba(244,244,239,0.92);
+    }
+
+    /* ============================================================
+       3. BASE STYLES
+       ============================================================ */
+    html   { scroll-behavior: smooth; }
+    body   {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.65;
+      overflow-x: hidden;
+      /* smooth theme transition */
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Headings use Syne */
+    h1,h2,h3,h4 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--text);
+    }
+
+    p { color: var(--muted2); font-weight: 300; line-height: 1.78; }
+
+    /* ============================================================
+       4. REUSABLE UTILITIES
+       ============================================================ */
+
+    /* Each section gets padding */
+    .section { padding: 112px 6%; position: relative; z-index: 2; }
+    .section-alt { background: var(--bg2); }
+
+    /* Small label above headings */
+    .s-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.18em; color: var(--accent);
+      font-weight: 600; margin-bottom: 14px;
+    }
+    .s-tag::before { content:''; width:22px; height:1px; background:var(--accent); }
+
+    /* Main heading */
+    .s-title {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 800; letter-spacing:-0.03em;
+      line-height:1.06; margin-bottom:16px;
+    }
+
+    /* Subtext under heading */
+    .s-sub { font-size:1rem; max-width:500px; }
+
+    /* Primary button (yellow) */
+    .btn-p {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--accent); color:#08080f;
+      padding:13px 30px; border-radius:6px;
+      font-weight:700; font-size:0.88rem;
+      text-transform:uppercase; letter-spacing:0.06em;
+      border:none; cursor:pointer;
+      transition:transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-p:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(232,255,71,0.35); }
+
+    /* Ghost / outline button */
+    .btn-g {
+      display:inline-flex; align-items:center; gap:8px;
+      background:transparent; color:var(--text);
+      padding:13px 30px; border-radius:6px;
+      font-size:0.88rem; border:1px solid var(--border2);
+      transition:border-color 0.2s, background 0.2s;
+    }
+    .btn-g:hover { border-color:var(--accent); background:rgba(232,255,71,0.04); }
+
+    /* Scroll-reveal: elements start hidden, JS adds .vis */
+    .rev {
+      opacity:0; transform:translateY(30px);
+      transition:opacity 0.75s ease, transform 0.75s ease;
+    }
+    .rev.vis { opacity:1; transform:translateY(0); }
+    .rev.d1 { transition-delay:0.1s; }
+    .rev.d2 { transition-delay:0.2s; }
+    .rev.d3 { transition-delay:0.3s; }
+
+    /* ============================================================
+       5. NAVBAR
+       ============================================================ */
+    .navbar {
+      position:fixed; top:0; left:0; right:0;
+      z-index:1000; padding:18px 6%;
+      display:flex; justify-content:space-between; align-items:center;
+      transition:background 0.3s, border 0.3s;
+    }
+    /* Frosted glass on scroll (added by JS) */
+    .navbar.scrolled {
+      background:var(--nav-bg);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+
+    /* Logo */
+    .logo {
+      font-family:'Syne',sans-serif; font-size:1.3rem;
+      font-weight:800; letter-spacing:-0.02em;
+    }
+    .logo span { color:var(--accent); }
+
+    /* Desktop nav links */
+    .nav-links {
+      display:flex; align-items:center; gap:30px;
+    }
+    .nav-links a {
+      color:var(--muted2); font-size:0.86rem;
+      font-weight:500; letter-spacing:0.02em;
+      transition:color 0.2s;
+    }
+    .nav-links a:hover { color:var(--text); }
+
+    /* Hire Me pill button */
+    .nav-hire {
+      background:var(--accent); color:#08080f !important;
+      padding:9px 20px; border-radius:6px;
+      font-weight:700 !important; font-size:0.8rem !important;
+      text-transform:uppercase; letter-spacing:0.05em;
+      transition:transform 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-hire:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(232,255,71,0.35); }
+
+    /* Dark/Light toggle button */
+    .theme-btn {
+      width:38px; height:38px; border-radius:50%;
+      background:var(--bg3); border:1px solid var(--border2);
+      color:var(--text); font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background 0.2s, transform 0.2s;
+    }
+    .theme-btn:hover { background:var(--bg4); transform:rotate(20deg); }
+
+    /* Hamburger for mobile */
+    .hamburger {
+      display:none; flex-direction:column;
+      gap:5px; cursor:pointer; padding:4px;
+    }
+    .hamburger span {
+      width:22px; height:2px;
+      background:var(--text); border-radius:2px;
+      transition:all 0.3s;
+    }
+
+    /* Full-screen mobile menu overlay */
+    .mob-nav {
+      display:none; position:fixed; inset:0;
+      background:var(--bg); z-index:900;
+      flex-direction:column; align-items:center;
+      justify-content:center; gap:28px;
+    }
+    .mob-nav.open { display:flex; }
+    .mob-nav a {
+      font-family:'Syne',sans-serif; font-size:1.8rem;
+      font-weight:800; color:var(--text); transition:color 0.2s;
+    }
+    .mob-nav a:hover { color:var(--accent); }
+    .mob-close {
+      position:absolute; top:22px; right:6%;
+      background:none; border:none; color:var(--text);
+      font-size:1.4rem; cursor:pointer;
+    }
+
+    /* ============================================================
+       6. HERO SECTION  (#home)
+       ============================================================ */
+    .hero {
+      min-height:100vh; display:flex; flex-direction:column;
+      justify-content:flex-end; padding:0 6% 88px;
+      position:relative; overflow:hidden;
+    }
+
+    /* Grid lines background pattern */
+    .hero-grid {
+      position:absolute; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.024) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.024) 1px, transparent 1px);
+      background-size:78px 78px;
+      mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 25%, transparent 100%);
+    }
+    html.light .hero-grid {
+      background-image:
+        linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+    }
+
+    /* Atmospheric glow orbs */
+    .orb {
+      position:absolute; border-radius:50%; pointer-events:none;
+    }
+    .orb1 {
+      width:680px; height:680px;
+      background:radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 65%);
+      top:50%; left:54%; transform:translate(-50%,-50%);
+    }
+    .orb2 {
+      width:360px; height:360px;
+      background:radial-gradient(circle, rgba(71,184,255,0.06) 0%, transparent 65%);
+      top:14%; right:8%;
+    }
+
+    /* "Available" blinking indicator */
+    .avail-badge {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:0.76rem; text-transform:uppercase;
+      letter-spacing:0.14em; color:var(--muted);
+      margin-bottom:26px;
+      animation:fadeUp 0.9s ease both;
+    }
+    .avail-dot {
+      width:7px; height:7px; background:#4ade80;
+      border-radius:50%; animation:pulse 2.2s infinite;
+    }
+    .avail-line { width:36px; height:1px; background:var(--muted); }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+
+    /* Big hero headline */
+    .hero-h1 {
+      font-size:clamp(3.5rem, 9.5vw, 8.5rem);
+      font-weight:800; line-height:0.96;
+      letter-spacing:-0.04em; position:relative; z-index:2;
+      animation:fadeUp 0.9s 0.08s ease both;
+    }
+    /* Outlined text (no fill) */
+    .hero-h1 .outline {
+      -webkit-text-stroke:1.5px rgba(240,237,232,0.22);
+      color:transparent;
+    }
+    html.light .hero-h1 .outline {
+      -webkit-text-stroke:1.5px rgba(17,17,24,0.22);
+    }
+    .hero-h1 .accent { color:var(--accent); }
+
+    /* Bottom row: description + buttons */
+    .hero-bottom {
+      display:flex; justify-content:space-between;
+      align-items:flex-end; margin-top:52px;
+      flex-wrap:wrap; gap:28px; position:relative; z-index:2;
+      animation:fadeUp 0.9s 0.17s ease both;
+    }
+    .hero-desc { max-width:420px; font-size:1.04rem; }
+    .hero-desc strong { color:var(--text); font-weight:500; }
+    .hero-ctas { display:flex; gap:12px; flex-wrap:wrap; }
+
+    /* Stats bar at bottom */
+    .hero-stats {
+      display:flex; gap:44px; margin-top:60px;
+      padding-top:36px; border-top:1px solid var(--border);
+      position:relative; z-index:2; flex-wrap:wrap;
+      animation:fadeUp 0.9s 0.28s ease both;
+    }
+    .stat-n {
+      font-family:'Syne',sans-serif; font-size:2.1rem;
+      font-weight:800; color:var(--accent); line-height:1;
+    }
+    .stat-l { font-size:0.78rem; color:var(--muted); margin-top:4px; letter-spacing:0.04em; }
+
+    /* Right-side scroll hint */
+    .scroll-hint {
+      position:absolute; bottom:88px; right:6%;
+      display:flex; flex-direction:column; align-items:center; gap:7px;
+      color:var(--muted); font-size:0.7rem; text-transform:uppercase;
+      letter-spacing:0.12em; writing-mode:vertical-rl;
+      animation:fadeUp 0.9s 0.38s ease both;
+    }
+    .scroll-line { width:1px; height:50px; background:linear-gradient(to bottom,var(--muted),transparent); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(38px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ============================================================
+       7. MARQUEE STRIP
+       ============================================================ */
+    .marquee-strip {
+      padding:26px 0; overflow:hidden;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      background:var(--bg2);
+    }
+    .marquee-track {
+      display:flex; white-space:nowrap;
+      animation:scroll 22s linear infinite;
+    }
+    .marquee-item {
+      display:inline-flex; align-items:center; gap:42px;
+      padding:0 42px;
+      font-family:'Syne',sans-serif; font-size:0.9rem;
+      font-weight:600; color:var(--muted);
+      text-transform:uppercase; letter-spacing:0.06em;
+    }
+    .m-dot { color:var(--accent); font-size:0.45rem; }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ============================================================
+       8. ABOUT SECTION  (#about)
+       ============================================================ */
+    .about-grid {
+      display:grid; grid-template-columns:1fr 1.1fr;
+      gap:80px; margin-top:70px; align-items:start;
+    }
+    .about-left .big-q {
+      font-family:'Syne',sans-serif;
+      font-size:clamp(1.5rem,3vw,2.2rem);
+      font-weight:700; line-height:1.25;
+      letter-spacing:-0.02em; margin-bottom:26px;
+    }
+    .about-left .big-q em { color:var(--accent); font-style:normal; }
+    .about-left p { margin-bottom:15px; }
+
+    /* Right column: sticky stat cards */
+    .about-right { position:sticky; top:110px; display:flex; flex-direction:column; gap:13px; }
+    .a-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:14px; padding:26px;
+      transition:border-color 0.3s;
+    }
+    .a-card:hover { border-color:var(--border2); }
+    .a-card .num {
+      font-family:'Syne',sans-serif; font-size:2.6rem;
+      font-weight:800; color:var(--accent); line-height:1; margin-bottom:7px;
+    }
+    .a-card h4 { font-size:0.93rem; font-weight:700; margin-bottom:5px; }
+    .a-card p  { font-size:0.84rem; line-height:1.62; }
+
+    /* Skills pills below bio */
+    .pills { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
+    .pill {
+      background:var(--bg3); border:1px solid var(--border);
+      padding:7px 16px; border-radius:100px;
+      font-size:0.83rem; color:var(--text);
+      transition:border-color 0.2s, color 0.2s;
+    }
+    .pill:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* ============================================================
+       9. TECH STACK  (#stack)
+       ============================================================ */
+    .stack-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(148px,1fr));
+      gap:11px; margin-top:52px;
+    }
+    .st-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:12px; padding:22px 16px; text-align:center;
+      transition:border-color 0.3s, transform 0.3s, background 0.3s;
+    }
+    .st-card:hover { border-color:rgba(232,255,71,0.32); transform:translateY(-4px); background:var(--bg4); }
+    .st-icon { font-size:1.75rem; margin-bottom:10px; }
+    .st-name { font-size:0.85rem; font-weight:600; margin-bottom:3px; }
+    .st-type { font-size:0.7rem; color:var(--muted); letter-spacing:0.04em; }
+
+    /* ============================================================
+       10. SERVICES SECTION  (#services)
+       ============================================================ */
+    .svc-layout {
+      display:grid; grid-template-columns:1fr 2fr;
+      gap:76px; margin-top:70px; align-items:start;
+    }
+    .svc-sticky { position:sticky; top:110px; }
+
+    .svc-list { display:flex; flex-direction:column; }
+    .svc-row {
+      display:grid; grid-template-columns:40px 1fr auto;
+      gap:22px; align-items:start;
+      border-top:1px solid var(--border);
+      padding:26px 10px; border-radius:10px; margin:0 -10px;
+      transition:background 0.2s;
+    }
+    .svc-row:last-child { border-bottom:1px solid var(--border); }
+    .svc-row:hover { background:var(--bg3); }
+    .svc-n { font-family:'Syne',sans-serif; font-size:0.76rem; color:var(--muted); font-weight:600; padding-top:3px; }
+    .svc-t h3 { font-size:1.05rem; font-weight:700; margin-bottom:6px; }
+    .svc-t p  { font-size:0.86rem; line-height:1.62; }
+    .svc-badge {
+      background:var(--bg4); border:1px solid var(--border);
+      padding:7px 14px; border-radius:100px;
+      font-size:0.77rem; font-weight:700;
+      color:var(--accent); white-space:nowrap; margin-top:3px;
+    }
+
+    /* ============================================================
+       11. PORTFOLIO SECTION  (#portfolio)
+       ============================================================ */
+    .port-header {
+      display:flex; justify-content:space-between;
+      align-items:center; flex-wrap:wrap; gap:18px; margin-bottom:38px;
+    }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; }
+    .fb {
+      background:transparent; border:1px solid var(--border2);
+      color:var(--muted2); padding:8px 18px; border-radius:100px;
+      font-size:0.8rem; cursor:pointer;
+      transition:all 0.2s; font-family:'DM Sans',sans-serif;
+    }
+    .fb.active,.fb:hover { background:var(--accent); border-color:var(--accent); color:#08080f; font-weight:600; }
+
+    .port-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(320px,1fr));
+      gap:18px;
+    }
+
+    /* Project card */
+    .pc {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:15px; overflow:hidden;
+      transition:transform 0.32s, box-shadow 0.32s, border-color 0.32s;
+    }
+    .pc:hover { transform:translateY(-8px); box-shadow:var(--shadow); border-color:var(--border2); }
+
+    /* Thumbnail */
+    .pc-thumb {
+      aspect-ratio:16/9; background:var(--bg4);
+      position:relative; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .pc-thumb img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s; }
+    .pc:hover .pc-thumb img { transform:scale(1.07); }
+
+    /* Placeholder when no image */
+    .pc-empty { display:flex; flex-direction:column; align-items:center; gap:8px; opacity:0.28; }
+    .pc-empty .ei { font-size:2.6rem; }
+    .pc-empty p { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; }
+
+    /* Hover overlay with actions */
+    .pc-overlay {
+      position:absolute; inset:0;
+      background:rgba(8,8,15,0.75);
+      display:flex; align-items:center; justify-content:center; gap:9px;
+      opacity:0; transition:opacity 0.3s; backdrop-filter:blur(4px);
+    }
+    .pc:hover .pc-overlay { opacity:1; }
+    .oa-btn {
+      background:var(--accent); color:#08080f;
+      border:none; padding:9px 20px; border-radius:5px;
+      font-weight:700; font-size:0.78rem; cursor:pointer;
+      text-transform:uppercase; letter-spacing:0.04em;
+      font-family:'DM Sans',sans-serif;
+    }
+    .oa-ghost { background:transparent; border:1px solid rgba(255,255,255,0.3); color:#f0ede8; }
+
+    /* Card body */
+    .pc-body { padding:20px; }
+    .pc-body h3 { font-size:1rem; font-weight:700; margin-bottom:5px; }
+    .pc-body p  { font-size:0.83rem; line-height:1.58; margin-bottom:12px; }
+    .pc-tags { display:flex; gap:7px; flex-wrap:wrap; }
+    .pt {
+      background:rgba(232,255,71,0.07); border:1px solid rgba(232,255,71,0.13);
+      color:var(--accent); padding:3px 11px; border-radius:4px;
+      font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em;
+    }
+    .pt.blue { background:rgba(71,184,255,0.07); border-color:rgba(71,184,255,0.13); color:var(--accent2); }
+
+    /* "Add new" placeholder card */
+    .add-card {
+      background:transparent; border:1.5px dashed rgba(255,255,255,0.09);
+      border-radius:15px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:14px;
+      padding:50px 20px; cursor:pointer; min-height:280px;
+      transition:border-color 0.3s, background 0.3s;
+    }
+    .add-card:hover { border-color:rgba(232,255,71,0.35); background:rgba(232,255,71,0.02); }
+    .add-circle {
+      width:56px; height:56px; background:rgba(232,255,71,0.08);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:1.6rem; color:var(--accent); transition:transform 0.3s;
+    }
+    .add-card:hover .add-circle { transform:scale(1.12) rotate(90deg); }
+    .add-lbl strong { display:block; font-size:0.96rem; margin-bottom:3px; text-align:center; }
+    .add-lbl p { font-size:0.82rem; color:var(--muted); text-align:center; }
+
+    /* ============================================================
+       12. PROCESS SECTION  (#process)
+       ============================================================ */
+    .proc-wrap { margin-top:66px; position:relative; }
+    /* Vertical timeline line */
+    .proc-wrap::before {
+      content:''; position:absolute; left:22px; top:0; bottom:0;
+      width:1px; background:linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .proc-step { display:grid; grid-template-columns:68px 1fr; gap:26px; margin-bottom:48px; }
+    .proc-circle {
+      width:44px; height:44px; border-radius:50%;
+      background:var(--bg3); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Syne',sans-serif; font-size:0.82rem;
+      font-weight:700; color:var(--accent); position:relative; z-index:2;
+    }
+    .proc-body h3 { font-size:1.22rem; font-weight:700; margin-bottom:8px; padding-top:9px; }
+    .proc-body p  { font-size:0.92rem; line-height:1.8; }
+    .proc-time {
+      display:inline-block; margin-top:11px;
+      background:rgba(232,255,71,0.08); border:1px solid rgba(232,255,71,0.16);
+      padding:3px 13px; border-radius:100px;
+      font-size:0.73rem; color:var(--accent);
+    }
+
+    /* ============================================================
+       13. PRICING SECTION  (#pricing)
+       ============================================================ */
+    .price-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(272px,1fr));
+      gap:18px; margin-top:58px;
+    }
+    .pr-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:20px; padding:38px;
+      transition:transform 0.3s, border-color 0.3s; position:relative; overflow:hidden;
+    }
+    .pr-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg, transparent, var(--accent), transparent);
+      transform:scaleX(0); transition:transform 0.4s;
+    }
+    .pr-card:hover::before { transform:scaleX(1); }
+    .pr-card:hover { transform:translateY(-6px); border-color:var(--border2); }
+    .pr-card.feat { border-color:rgba(232,255,71,0.28); background:var(--bg4); }
+
+    .pop-badge {
+      position:absolute; top:17px; right:17px;
+      background:var(--accent); color:#08080f;
+      padding:3px 13px; border-radius:100px;
+      font-size:0.68rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:0.07em;
+    }
+    .pr-name { font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted2); margin-bottom:14px; }
+    .pr-price { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:800; line-height:1; margin-bottom:5px; }
+    .pr-price span { font-size:1.1rem; color:var(--muted); }
+    .pr-note { color:var(--muted); font-size:0.8rem; margin-bottom:28px; }
+    .pr-feats { list-style:none; margin-bottom:30px; }
+    .pr-feats li {
+      padding:8px 0; border-bottom:1px solid var(--border);
+      font-size:0.87rem; color:var(--muted2);
+      display:flex; align-items:center; gap:9px;
+    }
+    .pr-feats li::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; }
+    .pr-btn {
+      display:block; text-align:center;
+      background:var(--bg2); border:1px solid var(--border2);
+      color:var(--text); padding:13px; border-radius:8px;
+      font-weight:600; font-size:0.88rem;
+      transition:background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .pr-btn:hover, .pr-card.feat .pr-btn { background:var(--accent); border-color:var(--accent); color:#08080f; }
+
+    /* ============================================================
+       14. TESTIMONIALS  (#testimonials)
+       ============================================================ */
+    .testi-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(272px,1fr));
+      gap:18px; margin-top:54px;
+    }
+    .tc {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:15px; padding:28px; transition:border-color 0.3s;
+    }
+    .tc:hover { border-color:var(--border2); }
+    .tc-stars { color:var(--accent); font-size:0.82rem; letter-spacing:3px; margin-bottom:12px; }
+    .tc-q { font-family:'Syne',sans-serif; font-size:2.2rem; color:var(--accent); line-height:1; margin-bottom:10px; }
+    .tc-text { font-size:0.9rem; line-height:1.8; margin-bottom:20px; }
+    .tc-auth { display:flex; align-items:center; gap:12px; }
+    .tc-av { width:40px; height:40px; background:var(--bg4); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; border:1px solid var(--border); }
+    .tc-name { font-weight:600; font-size:0.87rem; margin-bottom:2px; color:var(--text); }
+    .tc-role { color:var(--muted); font-size:0.75rem; }
+
+    /* ============================================================
+       15. FAQ SECTION  (#faq)
+       ============================================================ */
+    .faq-layout {
+      display:grid; grid-template-columns:1fr 1.6fr;
+      gap:76px; margin-top:70px; align-items:start;
+    }
+    .faq-sticky { position:sticky; top:110px; }
+
+    .faq-list { display:flex; flex-direction:column; }
+    .faq-item { border-bottom:1px solid var(--border); }
+    .faq-q {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:19px 0; cursor:pointer; font-weight:500; font-size:0.95rem;
+      gap:18px; transition:color 0.2s; user-select:none;
+    }
+    .faq-q:hover { color:var(--accent); }
+    .faq-icon {
+      width:26px; height:26px; border:1px solid var(--border2);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:0.88rem; flex-shrink:0; transition:transform 0.3s, background 0.2s;
+    }
+    .faq-item.open .faq-icon { transform:rotate(45deg); background:var(--accent); border-color:var(--accent); color:#08080f; }
+    .faq-ans { max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; }
+    .faq-item.open .faq-ans { max-height:300px; padding-bottom:18px; }
+    .faq-ans p { font-size:0.9rem; line-height:1.8; }
+
+    /* ============================================================
+       16. CTA BAND
+       ============================================================ */
+    .cta-band {
+      background:var(--accent); padding:76px 6%;
+      display:flex; justify-content:space-between;
+      align-items:center; flex-wrap:wrap; gap:28px;
+      position:relative; z-index:2;
+    }
+    .cta-band h2 {
+      font-family:'Syne',sans-serif;
+      font-size:clamp(1.8rem,4vw,2.8rem);
+      font-weight:800; color:#08080f;
+      letter-spacing:-0.03em; line-height:1.15; max-width:520px;
+    }
+    .cta-dark {
+      background:#08080f; color:var(--accent);
+      padding:17px 36px; border-radius:6px;
+      font-weight:700; font-size:0.88rem;
+      text-transform:uppercase; letter-spacing:0.06em;
+      transition:transform 0.2s, box-shadow 0.2s;
+      display:inline-block;
+    }
+    .cta-dark:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,0.3); }
+
+    /* ============================================================
+       17. CONTACT SECTION  (#contact)
+       ============================================================ */
+    .contact-layout {
+      display:grid; grid-template-columns:1fr 1.2fr;
+      gap:76px; margin-top:70px; align-items:start;
+    }
+    .contact-left h3 { font-size:1.65rem; font-weight:800; margin-bottom:14px; line-height:1.2; }
+    .contact-left > p { margin-bottom:30px; }
+
+    .c-items { display:flex; flex-direction:column; gap:11px; }
+    .c-item {
+      display:flex; align-items:center; gap:14px;
+      padding:16px 18px; background:var(--bg3);
+      border:1px solid var(--border); border-radius:11px;
+      text-decoration:none; color:var(--text); font-size:0.9rem;
+      transition:border-color 0.2s, background 0.2s;
+    }
+    .c-item:hover { border-color:rgba(232,255,71,0.32); background:rgba(232,255,71,0.03); }
+    .c-item .ci-lbl { font-size:0.74rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:2px; }
+    .c-item .ci-val { font-weight:500; }
+
+    /* "Available" indicator */
+    .avail-line {
+      display:flex; align-items:center; gap:8px;
+      margin-top:22px; color:var(--muted2); font-size:0.83rem;
+    }
+    .gr-dot { width:8px; height:8px; background:#4ade80; border-radius:50%; animation:pulse 2s infinite; }
+
+    /* Contact form */
+    .cf-form { display:flex; flex-direction:column; gap:12px; }
+    .cf-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .cf-in {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:10px; padding:13px 15px;
+      color:var(--text); font-size:0.9rem; outline:none;
+      transition:border-color 0.2s; width:100%;
+    }
+    .cf-in:focus { border-color:rgba(232,255,71,0.42); }
+    .cf-in::placeholder { color:var(--muted); }
+    textarea.cf-in { resize:vertical; min-height:130px; }
+    .cf-sub {
+      background:var(--accent); color:#08080f;
+      border:none; padding:14px; border-radius:10px;
+      font-weight:700; font-size:0.92rem; cursor:pointer;
+      text-transform:uppercase; letter-spacing:0.06em;
+      transition:transform 0.2s, box-shadow 0.2s;
+    }
+    .cf-sub:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(232,255,71,0.3); }
+
+    /* ============================================================
+       18. FOOTER
+       ============================================================ */
+    .footer {
+      background:var(--bg); border-top:1px solid var(--border);
+      padding:56px 6% 32px; position:relative; z-index:2;
+    }
+    .ft-grid {
+      display:grid; grid-template-columns:1.4fr 1fr 1fr;
+      gap:56px; margin-bottom:44px;
+    }
+    .ft-brand p { color:var(--muted); font-size:0.85rem; line-height:1.7; max-width:290px; margin-top:12px; }
+    .ft-col h5 {
+      font-family:'Syne',sans-serif; font-size:0.8rem;
+      text-transform:uppercase; letter-spacing:0.12em;
+      color:var(--muted2); margin-bottom:16px; font-weight:700;
+    }
+    .ft-col ul { display:flex; flex-direction:column; gap:9px; }
+    .ft-col ul a { color:var(--muted); font-size:0.85rem; transition:color 0.2s; }
+    .ft-col ul a:hover { color:var(--accent); }
+    .ft-bot {
+      border-top:1px solid var(--border); padding-top:24px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px;
+    }
+    .ft-bot p { color:var(--muted); font-size:0.8rem; }
+    .ft-bot a { color:var(--accent); }
+
+    /* ============================================================
+       19. ADD PROJECT MODAL
+       ============================================================ */
+    .modal-bg {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.86); backdrop-filter:blur(12px);
+      z-index:2000; display:none; align-items:center;
+      justify-content:center; padding:20px;
+    }
+    .modal-bg.open { display:flex; }
+    .modal-box {
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:20px; padding:38px; width:100%; max-width:540px;
+      position:relative; animation:mIn 0.3s ease;
+    }
+    @keyframes mIn { from{opacity:0;transform:scale(0.95) translateY(18px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .modal-box h2 { font-size:1.45rem; margin-bottom:5px; }
+    .modal-box .msub { color:var(--muted); font-size:0.86rem; margin-bottom:26px; }
+    .m-x {
+      position:absolute; top:17px; right:17px;
+      background:var(--bg3); border:1px solid var(--border);
+      color:var(--muted2); width:34px; height:34px; border-radius:50%;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      font-size:0.9rem; transition:background 0.2s;
+    }
+    .m-x:hover { background:var(--bg4); }
+    .mf { margin-bottom:14px; }
+    .ml { display:block; font-size:0.73rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:7px; font-weight:500; }
+    .mi {
+      width:100%; background:var(--bg3); border:1px solid var(--border);
+      border-radius:9px; padding:11px 15px; color:var(--text);
+      font-size:0.9rem; outline:none; transition:border-color 0.2s;
+    }
+    .mi:focus { border-color:rgba(232,255,71,0.42); }
+    .mi::placeholder { color:var(--muted); }
+    .upload-zone {
+      border:1.5px dashed rgba(255,255,255,0.1); border-radius:9px;
+      padding:24px; text-align:center; cursor:pointer;
+      transition:border-color 0.2s, background 0.2s;
+    }
+    .upload-zone:hover { border-color:rgba(232,255,71,0.32); background:rgba(232,255,71,0.02); }
+    .upload-zone p { color:var(--muted); font-size:0.8rem; margin-top:7px; }
+    .m-ok {
+      width:100%; background:var(--accent); color:#08080f;
+      border:none; padding:13px; border-radius:9px;
+      font-weight:700; font-size:0.9rem; cursor:pointer;
+      text-transform:uppercase; letter-spacing:0.06em;
+      transition:transform 0.2s, box-shadow 0.2s; margin-top:7px;
+    }
+    .m-ok:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(232,255,71,0.3); }
+
+    /* ============================================================
+       20. LIGHTBOX  (full-screen image view)
+       ============================================================ */
+    .lightbox {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.96); z-index:3000;
+      display:none; align-items:center; justify-content:center; padding:20px;
+    }
+    .lightbox.open { display:flex; }
+    .lightbox img { max-width:90vw; max-height:88vh; border-radius:12px; object-fit:contain; }
+    .lb-x {
+      position:absolute; top:18px; right:18px;
+      background:rgba(255,255,255,0.1); border:none; color:white;
+      width:42px; height:42px; border-radius:50%; font-size:1rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    }
+    .lb-x:hover { background:rgba(255,255,255,0.2); }
+
+    /* ============================================================
+       21. TOAST NOTIFICATION
+       ============================================================ */
+    .toast {
+      position:fixed; bottom:28px; right:28px;
+      background:var(--bg2); border:1px solid rgba(232,255,71,0.3);
+      border-radius:11px; padding:13px 20px;
+      display:flex; align-items:center; gap:9px;
+      z-index:9999; font-size:0.86rem; color:var(--text);
+      transform:translateY(80px); opacity:0; pointer-events:none;
+      transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast-dot { width:7px; height:7px; background:var(--accent); border-radius:50%; flex-shrink:0; }
+
+    /* ============================================================
+       22. RESPONSIVE BREAKPOINTS
+       ============================================================ */
+    @media (max-width:960px) {
+      .nav-links   { display:none; }
+      .hamburger   { display:flex; }
+      .about-grid,
+      .svc-layout,
+      .faq-layout,
+      .contact-layout { grid-template-columns:1fr; gap:46px; }
+      .about-right,
+      .svc-sticky,
+      .faq-sticky  { position:static; }
+      .ft-grid     { grid-template-columns:1fr; gap:38px; }
+    }
+    @media (max-width:600px) {
+      .section { padding:80px 5%; }
+      .hero    { padding:0 5% 72px; }
+      .hero-stats { gap:26px; }
+      .hero-bottom { flex-direction:column; align-items:flex-start; }
+      .cf-row  { grid-template-columns:1fr; }
+      .port-grid { grid-template-columns:1fr; }
+      .scroll-hint { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     - Logo links to #home
+     - Desktop links scroll to each section
+     - ☀️/🌙 theme toggle saves preference in localStorage
+     - Mobile: hamburger opens full-screen drawer
+     ============================================================ -->
+<nav class="navbar" id="navbar">
+
+  <!-- Logo -->
+  <a href="#home" class="logo">Steve<span>.</span>dev</a>
+
+  <!-- Desktop links -->
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <!-- Dark/Light mode toggle -->
+    <li><button class="theme-btn" id="themeBtn" title="Toggle theme">☀️</button></li>
+    <!-- Hire Me pill -->
+    <li><a href="#contact" class="nav-hire">Hire Me</a></li>
+  </ul>
+
+  <!-- Mobile: theme toggle + hamburger -->
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="theme-btn" id="themeBtnMob">☀️</button>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile full-screen menu -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" id="mobClose">✕</button>
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#portfolio">Work</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" style="color:var(--accent)">Hire Me →</a>
+</div>
+
+
+<!-- ============================================================
+     HERO SECTION  (#home)
+     Full-height intro with animated headline, stats, and CTAs
+     ============================================================ -->
+<section class="hero" id="home">
+
+  <!-- Background grid lines -->
+  <div class="hero-grid"></div>
+  <!-- Atmospheric glow orbs -->
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <!-- "Available" badge -->
+  <div class="avail-badge">
+    <div class="avail-dot"></div>
+    <div class="avail-line"></div>
+    <span>Available for new projects</span>
+  </div>
+
+  <!-- Main headline: 3 lines, different visual treatments -->
+  <h1 class="hero-h1">
+    Crafting<br>
+    <span class="outline">Digital</span><br>
+    <span class="accent">Experiences</span>
+  </h1>
+
+  <!-- Description + CTA buttons -->
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      I'm a <strong>web developer from Rajahmundry</strong> who builds
+      fast, stunning websites that turn visitors into customers.
+      <strong>Clean code. Pixel-perfect design. Real results.</strong>
+    </p>
+    <div class="hero-ctas">
+      <a href="#portfolio" class="btn-p">View My Work →</a>
+      <a href="#contact"   class="btn-g">Let's Talk ↗</a>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="hero-stats">
+    <div><div class="stat-n" id="statCount">0+</div><div class="stat-l">Sites Delivered</div></div>
+    <div><div class="stat-n">100%</div><div class="stat-l">Satisfaction</div></div>
+    <div><div class="stat-n">48h</div><div class="stat-l">Avg. Turnaround</div></div>
+    <div><div class="stat-n">₹</div><div class="stat-l">Honest Pricing</div></div>
+  </div>
+
+  <!-- Scroll hint (right side) -->
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+
+<!-- ============================================================
+     MARQUEE STRIP
+     Infinite scrolling keywords strip below hero
+     ============================================================ -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <!-- Content duplicated so the loop is seamless -->
+    <div class="marquee-item">
+      Web Development <span class="m-dot">✦</span>
+      UI Design <span class="m-dot">✦</span>
+      E-Commerce <span class="m-dot">✦</span>
+      SEO Optimisation <span class="m-dot">✦</span>
+      Responsive Design <span class="m-dot">✦</span>
+      Performance Tuning <span class="m-dot">✦</span>
+      Custom Websites <span class="m-dot">✦</span>
+      Landing Pages <span class="m-dot">✦</span>
+      Business Sites <span class="m-dot">✦</span>
+      Web Development <span class="m-dot">✦</span>
+      UI Design <span class="m-dot">✦</span>
+      E-Commerce <span class="m-dot">✦</span>
+      SEO Optimisation <span class="m-dot">✦</span>
+      Responsive Design <span class="m-dot">✦</span>
+      Performance Tuning <span class="m-dot">✦</span>
+      Custom Websites <span class="m-dot">✦</span>
+      Landing Pages <span class="m-dot">✦</span>
+      Business Sites <span class="m-dot">✦</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     ABOUT SECTION  (#about)
+     Bio text on left, sticky stat cards on right
+     ============================================================ -->
+<section class="section section-alt" id="about">
+  <div class="about-grid">
+
+    <!-- Left: bio -->
+    <div class="about-left rev">
+      <div class="s-tag">Who I Am</div>
+      <div class="big-q">I build websites that actually <em>work</em> for your business.</div>
+      <p>Hey, I'm Steve — a web developer based in Rajahmundry, Andhra Pradesh. I design and develop fast, beautiful, fully custom websites that help local and online businesses grow.</p>
+      <p>I've delivered websites across many industries — coaching institutes, clinics, retail shops, and service businesses. Every project gets the same attention: clean code, thoughtful design, and a site that loads in under 2 seconds.</p>
+      <p>I understand what small businesses in AP actually need — not an overpriced agency quote, but a professional website that gets results. I work directly with you, zero middlemen, and I deliver sites that make your business look world-class online.</p>
+      <p>My approach: understand your business → build exactly what you need → deliver fast → be available whenever you need changes.</p>
+
+      <!-- Skill pills -->
+      <div class="pills">
+        <span class="pill">HTML5 / CSS3</span>
+        <span class="pill">JavaScript</span>
+        <span class="pill">Responsive Design</span>
+        <span class="pill">E-Commerce</span>
+        <span class="pill">SEO</span>
+        <span class="pill">Performance</span>
+        <span class="pill">UI / UX</span>
+        <span class="pill">Google Analytics</span>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;">
+        <a href="#portfolio" class="btn-p">See My Work →</a>
+        <a href="#contact"   class="btn-g">Get In Touch</a>
+      </div>
+    </div>
+
+    <!-- Right: stat cards (sticky) -->
+    <div class="about-right rev d2">
+      <div class="a-card"><div class="num">10+</div><h4>Websites Delivered</h4><p>Built and launched websites for businesses across Rajahmundry and East Godavari district.</p></div>
+      <div class="a-card"><div class="num">48h</div><h4>Average Turnaround</h4><p>Most standard websites are ready to go live within 48 to 72 hours of project kick-off.</p></div>
+      <div class="a-card"><div class="num">100%</div><h4>Client Satisfaction</h4><p>Every client gets exactly what they asked for — no surprises, no hidden charges ever.</p></div>
+      <div class="a-card"><div class="num">₹</div><h4>Transparent Pricing</h4><p>Honest, flat-rate pricing. You know the cost before work begins — always.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TECH STACK  (#stack)
+     Grid of tools/technologies used (no WordPress mentioned)
+     ============================================================ -->
+<section class="section" id="stack">
+  <div class="rev">
+    <div class="s-tag">Tech Stack</div>
+    <h2 class="s-title">Tools of the Trade</h2>
+    <p class="s-sub">Modern, industry-proven technologies to build websites that are fast, secure, and easy to manage.</p>
+  </div>
+  <div class="stack-grid rev d2">
+    <div class="st-card"><div class="st-icon">🌐</div><div class="st-name">HTML5</div><div class="st-type">Markup</div></div>
+    <div class="st-card"><div class="st-icon">🎨</div><div class="st-name">CSS3</div><div class="st-type">Styling</div></div>
+    <div class="st-card"><div class="st-icon">⚡</div><div class="st-name">JavaScript</div><div class="st-type">Interaction</div></div>
+    <div class="st-card"><div class="st-icon">📱</div><div class="st-name">Responsive</div><div class="st-type">Mobile-First</div></div>
+    <div class="st-card"><div class="st-icon">🛒</div><div class="st-name">E-Commerce</div><div class="st-type">Online Store</div></div>
+    <div class="st-card"><div class="st-icon">🔍</div><div class="st-name">SEO</div><div class="st-type">Search Rank</div></div>
+    <div class="st-card"><div class="st-icon">🚀</div><div class="st-name">Performance</div><div class="st-type">Speed Opt.</div></div>
+    <div class="st-card"><div class="st-icon">🔒</div><div class="st-name">Security</div><div class="st-type">SSL & Backups</div></div>
+    <div class="st-card"><div class="st-icon">📊</div><div class="st-name">Analytics</div><div class="st-type">Google Insights</div></div>
+    <div class="st-card"><div class="st-icon">✉️</div><div class="st-name">Contact Forms</div><div class="st-type">Lead Capture</div></div>
+    <div class="st-card"><div class="st-icon">🗺️</div><div class="st-name">Google Maps</div><div class="st-type">Local SEO</div></div>
+    <div class="st-card"><div class="st-icon">☁️</div><div class="st-name">Cloud Hosting</div><div class="st-type">99.9% Uptime</div></div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SERVICES SECTION  (#services)
+     Sticky left label + numbered service rows on right
+     ============================================================ -->
+<section class="section section-alt" id="services">
+  <div class="svc-layout">
+
+    <!-- Left sticky label -->
+    <div class="svc-sticky rev">
+      <div class="s-tag">Services</div>
+      <h2 class="s-title">What I Build</h2>
+      <p class="s-sub">From simple landing pages to full e-commerce stores — designed and built to grow your business.</p>
+      <br/><br/>
+      <a href="#contact" class="btn-p">Start a Project →</a>
+    </div>
+
+    <!-- Right: service rows -->
+    <div class="svc-list rev d2">
+      <div class="svc-row"><span class="svc-n">01</span><div class="svc-t"><h3>Business Website</h3><p>Professional multi-page sites for clinics, shops, coaching centers, and service businesses. SEO-ready and mobile-perfect.</p></div><span class="svc-badge">From ₹3,000</span></div>
+      <div class="svc-row"><span class="svc-n">02</span><div class="svc-t"><h3>E-Commerce Store</h3><p>Full online stores with product listings, cart, secure payment gateway, and order management. Sell anywhere in India.</p></div><span class="svc-badge">From ₹15,000</span></div>
+      <div class="svc-row"><span class="svc-n">03</span><div class="svc-t"><h3>Landing Page</h3><p>High-converting single-page sites for products, campaigns, or lead generation. Built to drive action.</p></div><span class="svc-badge">From ₹2,500</span></div>
+      <div class="svc-row"><span class="svc-n">04</span><div class="svc-t"><h3>Portfolio / Personal Site</h3><p>Elegant personal sites for doctors, lawyers, consultants, artists, and freelancers.</p></div><span class="svc-badge">From ₹3,500</span></div>
+      <div class="svc-row"><span class="svc-n">05</span><div class="svc-t"><h3>Site Redesign</h3><p>Outdated website? I'll redesign it from scratch — modern look, better speed, better user experience.</p></div><span class="svc-badge">From ₹4,000</span></div>
+      <div class="svc-row"><span class="svc-n">06</span><div class="svc-t"><h3>Speed & SEO Boost</h3><p>Slow site? Not on Google? I'll fix performance and implement on-page SEO to improve your ranking.</p></div><span class="svc-badge">From ₹2,000</span></div>
+      <div class="svc-row"><span class="svc-n">07</span><div class="svc-t"><h3>Monthly Maintenance</h3><p>Regular updates, security backups, and content edits. Keep your site healthy every month.</p></div><span class="svc-badge">₹500–₹2,000/mo</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PORTFOLIO SECTION  (#portfolio)
+     Project cards loaded from localStorage.
+     Click "+ Add Project" to upload a screenshot and add a card.
+     Cards are filterable by category.
+     ============================================================ -->
+<section class="section" id="portfolio">
+
+  <!-- Controls: filter buttons + add button -->
+  <div class="port-header rev">
+    <div>
+      <div class="s-tag">Portfolio</div>
+      <h2 class="s-title">Recent Work</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <div class="filters">
+        <button class="fb active" onclick="filterP('all',this)">All</button>
+        <button class="fb" onclick="filterP('Business',this)">Business</button>
+        <button class="fb" onclick="filterP('E-Commerce',this)">E-Commerce</button>
+        <button class="fb" onclick="filterP('Coaching',this)">Coaching</button>
+        <button class="fb" onclick="filterP('Other',this)">Other</button>
+      </div>
+      <!-- Opens the add-project modal below -->
+      <button class="btn-p" onclick="openModal()" style="font-size:0.8rem;padding:11px 22px;border:none;cursor:pointer;">
+        + Add Project
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid is populated by renderPortfolio() in JS -->
+  <div class="port-grid rev d1" id="portGrid"></div>
+</section>
+
+
+<!-- ============================================================
+     PROCESS SECTION  (#process)
+     6-step timeline showing how a project goes from idea to launch
+     ============================================================ -->
+<section class="section section-alt" id="process">
+  <div class="rev">
+    <div class="s-tag">How I Work</div>
+    <h2 class="s-title">My Process</h2>
+    <p class="s-sub">A clear, simple workflow so you always know what's happening.</p>
+  </div>
+
+  <div class="proc-wrap rev d1">
+    <div class="proc-step"><div class="proc-circle">01</div><div class="proc-body"><h3>Discovery Call</h3><p>Quick chat — WhatsApp, call, or in-person — to understand your business, goals, and what you need. No jargon, just plain conversation.</p><span class="proc-time">Day 1</span></div></div>
+    <div class="proc-step"><div class="proc-circle">02</div><div class="proc-body"><h3>Planning & Quote</h3><p>Clear breakdown of what gets built, what it costs, and how long it takes. You pay 50% upfront. No hidden charges — ever.</p><span class="proc-time">Day 1–2</span></div></div>
+    <div class="proc-step"><div class="proc-circle">03</div><div class="proc-body"><h3>Design & Development</h3><p>I build your site with clean structure, pixel-perfect design, and full mobile responsiveness. Fast load times and SEO are baked in from the start.</p><span class="proc-time">Day 2–4</span></div></div>
+    <div class="proc-step"><div class="proc-circle">04</div><div class="proc-body"><h3>Review & Revisions</h3><p>Live preview shared for your feedback. Revisions until everything is exactly right. Up to 3 rounds included in all plans.</p><span class="proc-time">Day 4–5</span></div></div>
+    <div class="proc-step"><div class="proc-circle">05</div><div class="proc-body"><h3>Launch & Handover</h3><p>Go live! I handle domain setup, hosting configuration, and final checks. You receive full ownership of your website.</p><span class="proc-time">Day 5–7</span></div></div>
+    <div class="proc-step"><div class="proc-circle">06</div><div class="proc-body"><h3>Ongoing Support</h3><p>Still available after launch for fixes, updates, and questions. Optional monthly maintenance plans keep your site perfect.</p><span class="proc-time">Ongoing</span></div></div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PRICING SECTION  (#pricing)
+     3 plan cards: Starter / Professional (featured) / E-Commerce
+     ============================================================ -->
+<section class="section" id="pricing">
+  <div class="rev" style="text-align:center;max-width:560px;margin:0 auto;">
+    <div class="s-tag" style="justify-content:center;">Pricing</div>
+    <h2 class="s-title">Clear, Simple Pricing</h2>
+    <p class="s-sub" style="margin:0 auto;">No hidden fees. No agency markups. Honest rates for quality work.</p>
+  </div>
+
+  <div class="price-grid rev d1">
+
+    <!-- Starter -->
+    <div class="pr-card">
+      <div class="pr-name">Starter</div>
+      <div class="pr-price">₹3,000 <span>– ₹6,000</span></div>
+      <div class="pr-note">Perfect for getting online fast</div>
+      <ul class="pr-feats">
+        <li>Up to 5 pages</li><li>Mobile responsive</li>
+        <li>Contact form</li><li>Basic SEO setup</li>
+        <li>Google Maps</li><li>WhatsApp button</li>
+        <li>2 revisions</li><li>Delivered in 48 hrs</li>
+      </ul>
+      <a href="#contact" class="pr-btn">Get Started</a>
+    </div>
+
+    <!-- Professional (featured / most popular) -->
+    <div class="pr-card feat">
+      <div class="pop-badge">Most Popular</div>
+      <div class="pr-name">Professional</div>
+      <div class="pr-price">₹8,000 <span>– ₹15,000</span></div>
+      <div class="pr-note">For businesses that want to stand out</div>
+      <ul class="pr-feats">
+        <li>Up to 10 pages</li><li>Custom design</li>
+        <li>Advanced SEO</li><li>Speed optimised</li>
+        <li>Blog / News section</li><li>Analytics setup</li>
+        <li>WhatsApp chat widget</li><li>3 revisions</li>
+        <li>Delivered in 72 hrs</li>
+      </ul>
+      <a href="#contact" class="pr-btn">Get Started</a>
+    </div>
+
+    <!-- E-Commerce -->
+    <div class="pr-card">
+      <div class="pr-name">E-Commerce</div>
+      <div class="pr-price">₹15,000 <span>– ₹30,000</span></div>
+      <div class="pr-note">Full online store setup</div>
+      <ul class="pr-feats">
+        <li>Unlimited products</li><li>Payment gateway</li>
+        <li>Order management</li><li>Customer accounts</li>
+        <li>Coupon system</li><li>Inventory tracking</li>
+        <li>Mobile checkout</li><li>5 revisions</li>
+      </ul>
+      <a href="#contact" class="pr-btn">Get Started</a>
+    </div>
+  </div>
+
+  <p style="text-align:center;margin-top:24px;color:var(--muted);font-size:0.83rem;">
+    * Domain + hosting is separate (approx ₹800–₹2,000/year). I'll help you buy and set it up.
+  </p>
+</section>
+
+
+<!-- ============================================================
+     TESTIMONIALS  (#testimonials)
+     3 client review cards with stars, quote, name, and role
+     ============================================================ -->
+<section class="section section-alt" id="testimonials">
+  <div class="rev" style="text-align:center;max-width:560px;margin:0 auto;">
+    <div class="s-tag" style="justify-content:center;">Testimonials</div>
+    <h2 class="s-title">What Clients Say</h2>
+  </div>
+
+  <div class="testi-grid rev d1">
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-q">"</div>
+      <p class="tc-text">Steve built our coaching center website in just 2 days. Students are finding us on Google now and enquiries have gone up a lot. Very professional and affordable.</p>
+      <div class="tc-auth"><div class="tc-av">👨‍🏫</div><div><div class="tc-name">Ravi Kumar</div><div class="tc-role">Director, RK Coaching Centre, Rajam</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-q">"</div>
+      <p class="tc-text">Our clinic needed a website fast and Steve delivered within 48 hours. Patients can now find our timings and book appointments easily. Excellent work at a fair price.</p>
+      <div class="tc-auth"><div class="tc-av">👨‍⚕️</div><div><div class="tc-name">Dr. Srinivas Rao</div><div class="tc-role">Godavari Multi-Speciality Clinic</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <div class="tc-q">"</div>
+      <p class="tc-text">We wanted an online store for our saree business. Steve built exactly what we needed. Orders are coming from outside Rajahmundry now. Very happy with the result!</p>
+      <div class="tc-auth"><div class="tc-av">👩‍💼</div><div><div class="tc-name">Lakshmi Devi</div><div class="tc-role">Owner, Godavari Silks</div></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FAQ SECTION  (#faq)
+     Accordion — click a question to expand/collapse the answer.
+     toggleFaq() in script below handles open/close logic.
+     ============================================================ -->
+<section class="section" id="faq">
+  <div class="faq-layout">
+
+    <!-- Left sticky label -->
+    <div class="faq-sticky rev">
+      <div class="s-tag">FAQ</div>
+      <h2 class="s-title">Common Questions</h2>
+      <p class="s-sub">More questions? WhatsApp me — I reply within a few hours.</p>
+      <br/>
+      <a href="#contact" class="btn-g" style="margin-top:8px;">Ask Me →</a>
+    </div>
+
+    <!-- Right: accordion list -->
+    <div class="faq-list rev d2">
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Do I need to provide anything to get started?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>Just your business name, what your business does, contact details, and any images or logo you have. I'll handle everything else — design, structure, content layout, and going live.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>How long does a website take?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>Most standard business websites are ready within 48–72 hours. E-commerce stores take 5–7 days. I always give you a clear timeline before starting.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>What about hosting and domain — who pays for that?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>Hosting and domain are separate from my development charge. I'll help you buy them at the best price (usually ₹800–₹2,000/year) and set everything up. Or if you have hosting, I'll work with that.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Can I update the website myself after it's done?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>Yes — I build sites with a simple admin panel so you can update text, images, and content yourself without any coding knowledge. I'll give you a walkthrough after delivery.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Do you work with clients outside Rajahmundry?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>Absolutely. I work with clients all across India via WhatsApp, video calls, and email. Distance is no barrier — most of the work is done online.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>What payment methods do you accept?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>I accept UPI (GPay, PhonePe, Paytm), bank transfer, and cash for local clients. 50% advance before starting, 50% after delivery.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Will my website show up on Google?</span><div class="faq-icon">+</div></div>
+        <div class="faq-ans"><p>All websites include basic on-page SEO — proper titles, meta descriptions, fast loading, and mobile-friendliness. For advanced SEO, I offer a separate optimisation service.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     CTA BAND
+     Bold yellow section pushing visitors to take action
+     ============================================================ -->
+<div class="cta-band rev">
+  <h2>Ready to get your business online? Let's build something great.</h2>
+  <a href="#contact" class="cta-dark">Start Your Project →</a>
+</div>
+
+
+<!-- ============================================================
+     CONTACT SECTION  (#contact)
+     Left: WhatsApp/email/location cards + availability
+     Right: contact form (handleContact() validates + shows toast)
+
+     TODO: Replace WhatsApp number and email with your real ones!
+     ============================================================ -->
+<section class="section section-alt" id="contact">
+  <div class="rev">
+    <div class="s-tag">Get In Touch</div>
+    <h2 class="s-title">Let's Work Together</h2>
+    <p class="s-sub">Tell me about your project — I'll reply within a few hours.</p>
+  </div>
+
+  <div class="contact-layout">
+
+    <!-- Left: contact detail cards -->
+    <div class="rev">
+      <h3 style="font-size:1.55rem;font-weight:800;margin-bottom:14px;line-height:1.2;">I'm available for new projects right now.</h3>
+      <p style="margin-bottom:28px;">Based in Rajahmundry, AP. Happy to meet locally or work with anyone across India.</p>
+
+      <div class="c-items">
+
+        <!-- REPLACE 91XXXXXXXXXX with your real WhatsApp number -->
+        <a href="https://wa.me/91XXXXXXXXXX" class="c-item" target="_blank">
+          <span style="font-size:1.1rem;">📱</span>
+          <div><div class="ci-lbl">WhatsApp (Fastest)</div><div class="ci-val">+91 XXXX-XXXXXX</div></div>
+        </a>
+
+        <!-- REPLACE your@email.com with your real email -->
+        <a href="mailto:your@email.com" class="c-item">
+          <span style="font-size:1.1rem;">✉️</span>
+          <div><div class="ci-lbl">Email</div><div class="ci-val">your@email.com</div></div>
+        </a>
+
+        <div class="c-item">
+          <span style="font-size:1.1rem;">📍</span>
+          <div><div class="ci-lbl">Location</div><div class="ci-val">Rajahmundry, East Godavari, AP</div></div>
+        </div>
+      </div>
+
+      <!-- Green dot = currently available -->
+      <div class="avail-line">
+        <div class="gr-dot"></div>
+        <span>Currently available — taking new projects</span>
+      </div>
+    </div>
+
+    <!-- Right: contact form -->
+    <div class="rev d2">
+      <div class="cf-form">
+        <!-- Name + Phone row -->
+        <div class="cf-row">
+          <input class="cf-in" type="text" id="cfName"  placeholder="Your Name *" />
+          <input class="cf-in" type="tel"  id="cfPhone" placeholder="WhatsApp / Phone *" />
+        </div>
+        <input class="cf-in" type="email" id="cfEmail"   placeholder="Email (optional)" />
+        <input class="cf-in" type="text"  id="cfType"    placeholder="Type of website needed" />
+        <textarea class="cf-in" id="cfMsg" placeholder="Tell me about your business..."></textarea>
+        <!-- handleContact() defined in script below -->
+        <button class="cf-sub" onclick="handleContact()">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+     3-column grid: brand / services / quick links
+     ============================================================ -->
+<footer class="footer">
+  <div class="ft-grid">
+    <div class="ft-brand">
+      <a href="#home" class="logo">Steve<span>.</span>dev</a>
+      <p>Web developer from Rajahmundry building fast, professional websites for businesses across India. Clean code, honest pricing, real results.</p>
+    </div>
+    <div class="ft-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#services">Business Websites</a></li>
+        <li><a href="#services">E-Commerce Stores</a></li>
+        <li><a href="#services">Landing Pages</a></li>
+        <li><a href="#services">Site Redesign</a></li>
+        <li><a href="#services">SEO & Speed</a></li>
+        <li><a href="#services">Maintenance</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h5>Quick Links</h5>
+      <ul>
+        <li><a href="#about">About Me</a></li>
+        <li><a href="#portfolio">My Work</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#process">My Process</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 Steve | Web Developer, Rajahmundry, AP</p>
+    <p>Built with passion in <a href="#home">Rajahmundry 🇮🇳</a></p>
+  </div>
+</footer>
+
+
+<!-- ============================================================
+     ADD PROJECT MODAL
+     Opens when user clicks "+ Add Project".
+     Saves to localStorage so projects persist on refresh.
+     ============================================================ -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal-box">
+    <button class="m-x" onclick="closeModal()">✕</button>
+    <h2>Add New Project</h2>
+    <p class="msub">Showcase your work — upload a screenshot to add it to the portfolio.</p>
+
+    <div class="mf"><label class="ml">Project Title *</label><input class="mi" type="text" id="mTitle" placeholder="e.g. Rajahmundry Coaching Centre"/></div>
+    <div class="mf">
+      <label class="ml">Category</label>
+      <select class="mi" id="mCat">
+        <option value="Business">Business Website</option>
+        <option value="E-Commerce">E-Commerce</option>
+        <option value="Coaching">Coaching / Institute</option>
+        <option value="Portfolio">Portfolio / Personal</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="mf"><label class="ml">Short Description</label><input class="mi" type="text" id="mDesc" placeholder="e.g. Multi-page site with contact form and SEO"/></div>
+    <div class="mf">
+      <label class="ml">Screenshot</label>
+      <!-- Clicking this zone triggers the hidden file input -->
+      <div class="upload-zone" onclick="document.getElementById('mFile').click()">
+        <div style="font-size:1.8rem;">📸</div>
+        <p id="mFileLabel">Click to upload — PNG, JPG, WebP</p>
+        <input type="file" id="mFile" accept="image/*" style="display:none" onchange="onFileSelect(this)"/>
+      </div>
+    </div>
+    <div class="mf"><label class="ml">Live URL (optional)</label><input class="mi" type="text" id="mUrl" placeholder="https://example.com"/></div>
+    <button class="m-ok" onclick="submitProject()">Add to Portfolio ✓</button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     LIGHTBOX
+     Full-screen image viewer for portfolio screenshots.
+     Opens via openLightbox(src), closes on ✕ or background click.
+     ============================================================ -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <img id="lbImg" src="" alt="Project preview"/>
+</div>
+
+
+<!-- ============================================================
+     TOAST NOTIFICATION
+     showToast(msg) displays a slide-up message for 3 seconds.
+     Used for form submission feedback, project add/remove, etc.
+     ============================================================ -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastTxt">Done!</span>
+</div>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     All logic in one <script> block, clearly commented by feature.
+     ============================================================ -->
+<script>
+
+  /* ── 1. THEME TOGGLE (Dark / Light Mode) ──────────────────── */
+
+  // Apply saved theme immediately to avoid flash of wrong theme
+  (function() {
+    if (localStorage.getItem('steve-theme') === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  })();
+
+  // Update icon on all theme buttons
+  function syncThemeIcons() {
+    const isLight = document.documentElement.classList.contains('light');
+    document.querySelectorAll('#themeBtn, #themeBtnMob').forEach(btn => {
+      btn.textContent = isLight ? '🌙' : '☀️';
+    });
+  }
+
+  // Toggle dark ↔ light
+  function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    const isLight = document.documentElement.classList.contains('light');
+    localStorage.setItem('steve-theme', isLight ? 'light' : 'dark');
+    syncThemeIcons();
+  }
+
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  document.getElementById('themeBtnMob').addEventListener('click', toggleTheme);
+  syncThemeIcons(); // set correct icon on load
+
+
+  /* ── 2. NAVBAR SCROLL EFFECT ──────────────────────────────── */
+
+  // Adds frosted glass background when user scrolls past 60px
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+
+  /* ── 3. MOBILE HAMBURGER MENU ─────────────────────────────── */
+
+  const mobNav  = document.getElementById('mobNav');
+  const hamburger = document.getElementById('hamburger');
+
+  hamburger.addEventListener('click', () => {
+    mobNav.classList.add('open');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+  });
+
+  function closeMob() {
+    mobNav.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('mobClose').addEventListener('click', closeMob);
+  mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMob));
+
+
+  /* ── 4. SCROLL REVEAL ANIMATIONS ─────────────────────────── */
+
+  // IntersectionObserver watches .rev elements and adds .vis when visible
+  const revObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        revObs.unobserve(e.target); // stop watching after revealed
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.rev').forEach(el => revObs.observe(el));
+
+
+  /* ── 5. COUNTER ANIMATION (hero "10+" stat) ───────────────── */
+
+  // Animates number from 0 to target when element enters viewport
+  function animCount(el, target, suffix, duration = 1400) {
+    const step = target / (duration / 16);
+    let cur = 0;
+    const t = setInterval(() => {
+      cur += step;
+      if (cur >= target) { el.textContent = target + suffix; clearInterval(t); }
+      else { el.textContent = Math.floor(cur) + suffix; }
+    }, 16);
+  }
+
+  const statEl = document.getElementById('statCount');
+  const countObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { animCount(statEl, 10, '+'); countObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.5 });
+  countObs.observe(statEl);
+
+
+  /* ── 6. FAQ ACCORDION ─────────────────────────────────────── */
+
+  // Toggles open/close on FAQ item. Closes all others first.
+  function toggleFaq(qEl) {
+    const item = qEl.closest('.faq-item');
+    const allItems = document.querySelectorAll('.faq-item');
+    allItems.forEach(i => { if (i !== item) i.classList.remove('open'); });
+    item.classList.toggle('open');
+  }
+
+
+  /* ── 7. PORTFOLIO: DATA (localStorage) ───────────────────── */
+
+  const PKEY = 'stevedev-v3-projects'; // storage key
+
+  function getProjects() {
+    try { return JSON.parse(localStorage.getItem(PKEY) || '[]'); }
+    catch { return []; }
+  }
+
+  function saveProjects(list) {
+    localStorage.setItem(PKEY, JSON.stringify(list));
+  }
+
+
+  /* ── 8. PORTFOLIO: RENDER CARDS ──────────────────────────── */
+
+  let activeFilter = 'all'; // current filter category
+
+  function renderPortfolio() {
+    const grid = document.getElementById('portGrid');
+    const all  = getProjects();
+    const list = activeFilter === 'all' ? all : all.filter(p => p.cat === activeFilter);
+
+    grid.innerHTML = ''; // clear grid
+
+    // Render each project card
+    list.forEach((proj, di) => {
+      const ri = all.indexOf(proj); // real index (for deletion)
+      const card = document.createElement('div');
+      card.className = 'pc rev';
+
+      card.innerHTML = `
+        <div class="pc-thumb">
+          ${ proj.img
+            ? `<img src="${proj.img}" alt="${proj.title}" />`
+            : `<div class="pc-empty"><div class="ei">🌐</div><p>No Preview</p></div>`
+          }
+          <div class="pc-overlay">
+            ${ proj.img ? `<button class="oa-btn" onclick="openLb('${proj.img}')">View</button>` : '' }
+            ${ proj.url ? `<a href="${proj.url}" target="_blank" class="oa-btn oa-ghost">Live ↗</a>` : '' }
+            <button class="oa-btn oa-ghost" onclick="removeProject(${ri})">Remove</button>
+          </div>
+        </div>
+        <div class="pc-body">
+          <h3>${proj.title}</h3>
+          <p>${proj.desc || 'Custom website project'}</p>
+          <div class="pc-tags">
+            <span class="pt">${proj.cat}</span>
+            <span class="pt blue">Web Dev</span>
+          </div>
+        </div>`;
+
+      grid.appendChild(card);
+      // Stagger reveal animation per card
+      setTimeout(() => card.classList.add('vis'), di * 65);
+    });
+
+    // Add the "Add New" placeholder card at the end
+    const addCard = document.createElement('div');
+    addCard.className = 'add-card';
+    addCard.onclick = openModal;
+    addCard.innerHTML = `
+      <div class="add-circle">+</div>
+      <div class="add-lbl">
+        <strong>Add New Project</strong>
+        <p>Upload a screenshot of your work</p>
+      </div>`;
+    grid.appendChild(addCard);
+  }
+
+  // Filter by category
+  function filterP(cat, btn) {
+    activeFilter = cat;
+    document.querySelectorAll('.fb').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPortfolio();
+  }
+
+  // Delete a project by index
+  function removeProject(index) {
+    if (!confirm('Remove this project from portfolio?')) return;
+    const list = getProjects();
+    list.splice(index, 1);
+    saveProjects(list);
+    renderPortfolio();
+    showToast('Project removed.');
+  }
+
+
+  /* ── 9. PORTFOLIO: ADD MODAL ──────────────────────────────── */
+
+  let pickedImage = null; // stores base64 of uploaded screenshot
+
+  function openModal()  { document.getElementById('modalBg').classList.add('open'); }
+  function closeModal() { document.getElementById('modalBg').classList.remove('open'); resetModal(); }
+
+  // Close modal when clicking outside the box
+  document.getElementById('modalBg').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Handles file selection — converts to base64
+  function onFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('mFileLabel').innerHTML = `✅ <strong>${file.name}</strong>`;
+    const reader = new FileReader();
+    reader.onload = e => { pickedImage = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+
+  // Submit: validate → build object → save → render
+  function submitProject() {
+    const title = document.getElementById('mTitle').value.trim();
+    if (!title) { showToast('⚠️ Please enter a project title.'); return; }
+
+    const proj = {
+      title,
+      cat:  document.getElementById('mCat').value,
+      desc: document.getElementById('mDesc').value.trim(),
+      url:  document.getElementById('mUrl').value.trim(),
+      img:  pickedImage || null,
+    };
+
+    const list = getProjects();
+    list.unshift(proj); // add to front so newest appears first
+    saveProjects(list);
+    renderPortfolio();
+    closeModal();
+    showToast('🎉 Project added to portfolio!');
+  }
+
+  // Reset all modal form fields
+  function resetModal() {
+    ['mTitle','mDesc','mUrl'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('mCat').selectedIndex = 0;
+    document.getElementById('mFileLabel').textContent = 'Click to upload — PNG, JPG, WebP';
+    document.getElementById('mFile').value = '';
+    pickedImage = null;
+  }
+
+
+  /* ── 10. LIGHTBOX ─────────────────────────────────────────── */
+
+  function openLb(src) {
+    if (!src) return;
+    document.getElementById('lbImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLb() { document.getElementById('lightbox').classList.remove('open'); }
+
+  // Close lightbox when clicking dark background
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLb();
+  });
+
+
+  /* ── 11. CONTACT FORM ─────────────────────────────────────── */
+
+  function handleContact() {
+    const name  = document.getElementById('cfName').value.trim();
+    const phone = document.getElementById('cfPhone').value.trim();
+
+    // Basic validation
+    if (!name || !phone) {
+      showToast('⚠️ Please fill in your name and phone number.');
+      return;
+    }
+
+    // TODO: Replace with EmailJS or a backend endpoint for real submissions
+    showToast("✅ Message sent! I'll reply within a few hours.");
+    ['cfName','cfPhone','cfEmail','cfType','cfMsg'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+  }
+
+
+  /* ── 12. TOAST NOTIFICATION ───────────────────────────────── */
+
+  function showToast(msg, ms = 3200) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastTxt').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), ms);
+  }
+
+
+  /* ── 13. INIT ─────────────────────────────────────────────── */
+
+  // Render portfolio cards on page load
+  renderPortfolio();
+
+</script>
+</body>
+</html>
